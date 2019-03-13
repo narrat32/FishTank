@@ -24,9 +24,9 @@ public class Water {
 		
 		
 		
-		if(positionY >= 0.5) {
+		/*if(positionY >= 0.5) {
 			positionY = 0.9f;
-		}
+		}*/
 				
 		gl.glEnable(GL2.GL_BLEND);
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
@@ -34,7 +34,7 @@ public class Water {
 		gl.glColor4d(0.55, 0.82, 0.93, 0.5);
 		gl.glVertex2d(-1, 0.9);
 		//gl.glVertex2d(1, 0.9);
-		gl.glVertex2f(positionX, (1-positionY));
+		gl.glVertex2d(1, 0.9);
 		gl.glColor4d(0.25, 0.6, 0.8, 0.3);
 		//gl.glColor4d(0.25, 0.43, 0.5, 0.3);
 		gl.glVertex2d(1, -1);

@@ -18,8 +18,11 @@ import com.jogamp.opengl.util.gl2.GLUT;
 public class Main implements GLEventListener, MouseListener{
 	private Water water;
 	private Buttons buttons;
+	private WaveAnimation wave;
 	private float positionX = 1;
 	private float positionY = 0.9f;
+	private int windowWidth = 650;
+	private int windowHeight = 600;
 	
 	@Override
 	public void display(GLAutoDrawable drawable) {
@@ -61,9 +64,7 @@ public class Main implements GLEventListener, MouseListener{
 		//draws the overlaying water with animation
 		water.draw(gl, positionX, positionY);
 		buttons.draw(gl, glut);
-		
-		
-		
+		wave.draw(gl);
 	}
 	
 	@Override
@@ -75,11 +76,16 @@ public class Main implements GLEventListener, MouseListener{
 	public void init(GLAutoDrawable drawable) {
 		water = new Water();
 		buttons = new Buttons();
+		wave = new WaveAnimation();
+		GL2 gl = drawable.getGL().getGL2();
+		gl.setSwapInterval(1);
+		gl.glShadeModel(GL2.GL_SMOOTH);
 	}
 	
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-		
+		windowWidth = width;
+		windowHeight = height;
 	}
 
 
@@ -90,6 +96,7 @@ public static void main(String[] args) {
 	GLCanvas canvas = new GLCanvas(capabilities);
 	Main background = new Main();
 	canvas.addGLEventListener(background);
+	canvas.addMouseListener(background);
 	frame.add(canvas);
 	frame.setSize(650, 600);
 	final Animator animator = new Animator(canvas);
@@ -108,6 +115,8 @@ public static void main(String[] args) {
 	frame.setLocationRelativeTo(null);
 	frame.setVisible(true);
 	canvas.requestFocusInWindow();
+	
+	animator.start();
 	}
 
 @Override
@@ -135,9 +144,29 @@ public void mousePressed(MouseEvent arg0) {
 }
 
 @Override
-public void mouseReleased(MouseEvent arg0) {
-	// TODO Auto-generated method stub
-	
+public void mouseReleased(MouseEvent e) {
+	float mouseX = e.getX();
+	float mouseY = e.getY();
+	mouseY = windowHeight - mouseY;
+	float openglX = 2.0f * (mouseX / windowWidth) - 1.0f;
+	float openglY = 2.0f * (mouseY / windowHeight) - 1.0f;
+	if (e.getButton() == 1){
+	System.out.println("Click "+openglX+" "+openglY);
+	}
+	if(openglX >= -.98 && openglY <= 0.98 && openglX <= -0.7 && openglY >= 0.91) {
+	System.out.println("In bounds");
+	if(buttons.buttonOn == false) {
+	buttons.buttonOn = true;
+	System.out.println("Pump is on!");
+	}
+	else if(buttons.buttonOn == true){
+	buttons.buttonOn = false;
+	System.out.println("Pump is off!");
+	}
+	}
+	else {
+	System.out.println("Out of bounds");
+	}
 }
 
 }
