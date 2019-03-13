@@ -19,6 +19,7 @@ public class Main implements GLEventListener, MouseListener{
 	private Water water;
 	private Buttons buttons;
 	private WaveAnimation wave;
+	private Pump pump;
 	private float positionX = 1;
 	private float positionY = 0.9f;
 	private int windowWidth = 650;
@@ -61,9 +62,17 @@ public class Main implements GLEventListener, MouseListener{
 		gl.glVertex2d(1, -0.75);
 		gl.glVertex2d(-1, -0.75);
 		gl.glEnd();
-		//draws the overlaying water with animation
+		
+		//draws the pump
+		pump.draw(gl);
+		
+		//draws the overlaying water
 		water.draw(gl, positionX, positionY);
+		
+		//draws the button and adds functionality
 		buttons.draw(gl, glut);
+		
+		//adds a wave to the top of the water
 		wave.draw(gl);
 	}
 	
@@ -74,6 +83,7 @@ public class Main implements GLEventListener, MouseListener{
 	
 	@Override
 	public void init(GLAutoDrawable drawable) {
+		pump = new Pump();
 		water = new Water();
 		buttons = new Buttons();
 		wave = new WaveAnimation();
