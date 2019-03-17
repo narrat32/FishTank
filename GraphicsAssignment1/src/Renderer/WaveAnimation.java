@@ -17,7 +17,6 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class WaveAnimation {
 	private float waveX[] = {-1f, -0.75f, -0.5f, -0.25f, -0f, 0.25f, 0.5f ,0.75f, 1f};
-	private float waveY[] = {};
 	public void draw(GL2 gl) {
 		/*gl.glEnable(GL2.GL_BLEND);
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);*/

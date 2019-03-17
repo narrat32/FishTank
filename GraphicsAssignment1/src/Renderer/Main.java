@@ -20,8 +20,7 @@ public class Main implements GLEventListener, MouseListener{
 	private Buttons buttons;
 	private WaveAnimation wave;
 	private Pump pump;
-	private float positionX = 1;
-	private float positionY = 0.9f;
+	private BubbleSystem bubble;
 	private int windowWidth = 650;
 	private int windowHeight = 600;
 	
@@ -43,7 +42,8 @@ public class Main implements GLEventListener, MouseListener{
 		
 		//creates a blue background
 		gl.glBegin(GL2.GL_POLYGON);
-		gl.glColor3d(0.73, 0.86, 0.91);
+		//gl.glColor3d(0.73, 0.86, 0.91);
+		gl.glColor3d(0.12, 0.42, 0.91);
 		//gl.glColor3d(1, 1, 1);
 		gl.glVertex2d(-1, 0.9);
 		gl.glVertex2d(1, 0.9);
@@ -63,17 +63,21 @@ public class Main implements GLEventListener, MouseListener{
 		gl.glVertex2d(-1, -0.75);
 		gl.glEnd();
 		
-		//draws the pump
-		pump.draw(gl);
+		
 		
 		//draws the overlaying water
-		water.draw(gl, positionX, positionY);
+		water.draw(gl);
+		
+		//draws the pump
+		pump.draw(gl);
 		
 		//draws the button and adds functionality
 		buttons.draw(gl, glut);
 		
 		//adds a wave to the top of the water
 		wave.draw(gl);
+		
+		bubble.draw(gl);
 	}
 	
 	@Override
@@ -87,6 +91,7 @@ public class Main implements GLEventListener, MouseListener{
 		water = new Water();
 		buttons = new Buttons();
 		wave = new WaveAnimation();
+		bubble = new BubbleSystem();
 		GL2 gl = drawable.getGL().getGL2();
 		gl.setSwapInterval(1);
 		gl.glShadeModel(GL2.GL_SMOOTH);
