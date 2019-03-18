@@ -1,4 +1,4 @@
-package Renderer;
+	package Renderer;
 
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
@@ -16,13 +16,16 @@ import com.jogamp.opengl.util.Animator;
 
 public class Pump {
 	
+	public int pumpIndex;
 	public Pump() {
 		
 	}
 	
-	public void draw(GL2 gl) {
-		int pumpIndex = gl.glGenLists(3);
+	public void createList(GL2 gl) {
+		this.pumpIndex = gl.glGenLists(3);
+		
 		gl.glNewList(pumpIndex, GL2.GL_COMPILE);
+		
 		gl.glBegin(GL2.GL_POLYGON);
 		gl.glColor3d(.66, .67, .68);
 		gl.glVertex2d(0.6, -0.75);
@@ -49,12 +52,6 @@ public class Pump {
 	     }
 	    gl.glEnd();
 	    
-	    
 	    gl.glEndList();
-		
-		
-		
-		
-		gl.glCallList(pumpIndex);
 	}
 }

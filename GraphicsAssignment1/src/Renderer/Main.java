@@ -69,7 +69,8 @@ public class Main implements GLEventListener, MouseListener{
 		water.draw(gl);
 		
 		//draws the pump
-		pump.draw(gl);
+		pump.createList(gl);
+		gl.glCallList(pump.pumpIndex);
 		
 		//draws the button and adds functionality
 		buttons.draw(gl, glut);
