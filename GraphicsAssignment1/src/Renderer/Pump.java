@@ -34,9 +34,18 @@ public class Pump {
 		gl.glVertex2d(0.6, -0.55);
 		gl.glEnd();
 		
+		gl.glBegin(GL2.GL_POLYGON);
+		gl.glColor3d(.66, .67, .68);
+		gl.glVertex2d(0.8, -0.625);
+		gl.glVertex2d(1, -0.625);
+		gl.glVertex2d(1, -0.675);
+		gl.glVertex2d(0.8, -0.675);
+		gl.glEnd();
+		
 		gl.glBegin(GL2.GL_TRIANGLE_FAN);
-	     for(int i = 0; i <= 50; i++){
-	         double angle = 2 * Math.PI * i / 100;
+		gl.glColor3d(0.29, 0.29, 0.29);
+	     for(int i = 0; i <= 300; i++){
+	         double angle = 2 * Math.PI * i / 300;
 	         double x = Math.cos(angle) / 10;
 	         double y = Math.sin(angle) / 14;
 	         gl.glVertex2d(x + .7,y - .55);
@@ -44,12 +53,14 @@ public class Pump {
 	    gl.glEnd();
 	    
 	    gl.glBegin(GL2.GL_TRIANGLE_FAN);
+	    gl.glColor3d(.66, .67, .68);
 	     for(int i = 0; i <= 100; i++){
 	         double angle = 2 * Math.PI * i / 50;
 	         double x = Math.cos(angle) / 10;
 	         double y = Math.sin(angle) / 14;
 	         gl.glVertex2d(x + .7,y - .75);
 	     }
+	     
 	    gl.glEnd();
 	    
 	    gl.glEndList();

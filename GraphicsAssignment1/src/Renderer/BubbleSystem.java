@@ -40,12 +40,16 @@ public class BubbleSystem {
 	public void draw(GL2 gl) {
 		gl.glEnable(GL2.GL_BLEND);
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glPointSize(4.0f);
-		gl.glBegin(GL2.GL_POINTS);
+		gl.glBegin(GL2.GL_TRIANGLE_FAN);
 		for(Bubbles b : bubble) {
 			double f = b.age / b.ageMax;
-			gl.glColor4d(1,  1 - f, 0, 1.0 - f);
-			gl.glVertex2d(b.x, b.y);
+			for(int i = 0; i <= 100; i++){
+				gl.glColor4d(1, 1 - f, 1, 0.5 - f);
+		        double angle = 2 * Math.PI * i / 50;
+		        double x = Math.cos(angle) / 10;
+		        double y = Math.sin(angle) / 14;
+		        gl.glVertex2d(x + .7,y - .75);
+			}
 		}
 		gl.glEnd();
 		gl.glDisable(GL2.GL_BLEND);
