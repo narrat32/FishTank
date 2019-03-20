@@ -25,6 +25,28 @@ public class Fish {
 	public void createList(GL2 gl) {
 		this.fishIndex = gl.glGenLists(9);
 		
+		boolean finRaised = true;
+		double raiseY1 = 0.05;
+		double raiseY2 = -0.05;
+		
+		if(finRaised == true) {
+			raiseY1 -= 0.005;
+			raiseY2 += 0.005;
+			if(raiseY1 >= 0.07) {
+				finRaised = false;
+			}
+			
+		}
+		
+		else if(finRaised == false) {
+			raiseY1 += 0.005;
+			raiseY2 -= 0.005;
+			if(raiseY1 <= 0.3)
+			{
+				finRaised = true;
+			}
+		}
+		
 		//body
 	    gl.glBegin(GL2.GL_TRIANGLE_FAN);
 		gl.glEnable(GL2.GL_BLEND);
@@ -48,9 +70,9 @@ public class Fish {
 		    gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		    gl.glColor3d(1, 1, 1);
 		    gl.glVertex2d(-0.03, 0);
-		    gl.glVertex2d(-0.1, 0.05);
+		    gl.glVertex2d(-0.1, raiseY1);
 		    gl.glVertex2d(-0.07, 0);
-		    gl.glVertex2d(-0.1, -0.05);
+		    gl.glVertex2d(-0.1, raiseY2);
 		    gl.glEnd();
 		    
 		    //right fin

@@ -200,6 +200,7 @@ public void mouseReleased(MouseEvent e){
 	System.out.println("Click "+openglX+" "+openglY);
 	}
 	if(openglX >= -.98 && openglY <= 0.98 && openglX <= -0.7 && openglY >= 0.91) {
+		bubbleSystem.bubbles.clear();
 		System.out.println("In bounds");
 		System.out.println("Pump is on!");
 			if(buttons.buttonOn == false) {
@@ -225,6 +226,7 @@ public void mouseReleased(MouseEvent e){
 		System.out.println("Pump is off!");
 		System.out.println("Array size "+bubbleSystem.bubbles.size());
 		bubbleSystem.bubbles.clear();
+		
 		System.out.println("Bubbles removed!");
 		}
 	}
