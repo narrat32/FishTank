@@ -6,6 +6,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
@@ -18,12 +21,15 @@ import com.jogamp.opengl.util.gl2.GLUT;
 public class Main implements GLEventListener, MouseListener{
 	private Water water;
 	private Buttons buttons;
+	private Fish fish;
 	private WaveAnimation wave;
 	private Pump pump;
-	private BubbleSystem bubble;
+	private BubbleSystem bubbleSystem;
 	private int windowWidth = 650;
 	private int windowHeight = 600;
 	private double prevTick;
+	
+	
 	
 	@Override
 	public void display(GLAutoDrawable drawable) {
@@ -65,6 +71,9 @@ public class Main implements GLEventListener, MouseListener{
 		gl.glEnd();
 		
 		
+		//draws the fish
+		fish.createList(gl);
+		gl.glCallList(fish.fishIndex);
 		
 		//draws the overlaying water
 		water.draw(gl);
@@ -79,14 +88,16 @@ public class Main implements GLEventListener, MouseListener{
 		//adds a wave to the top of the water
 		wave.draw(gl);
 		
+		
+		
 		double tick = System.currentTimeMillis() / 1000.0;
 		double time = tick - prevTick;
 		if (prevTick > 0) {
-			bubble.animate(time);
+			bubbleSystem.animate(time);
 		}
 		prevTick = tick;
-		
-		bubble.draw(gl);
+		//draws the bubbles
+		bubbleSystem.draw(gl);
 	}
 	
 	@Override
@@ -100,10 +111,11 @@ public class Main implements GLEventListener, MouseListener{
 		gl.setSwapInterval(1);
 		gl.glShadeModel(GL2.GL_SMOOTH);
 		pump = new Pump();
+		fish = new Fish();
 		water = new Water();
 		buttons = new Buttons();
 		wave = new WaveAnimation();
-		bubble = new BubbleSystem();
+		bubbleSystem = new BubbleSystem();
 		prevTick = 0;
 		
 	}
@@ -121,6 +133,7 @@ public static void main(String[] args) {
 	GLCapabilities capabilities = new GLCapabilities(profile);
 	GLCanvas canvas = new GLCanvas(capabilities);
 	Main background = new Main();
+	
 	canvas.addGLEventListener(background);
 	canvas.addMouseListener(background);
 	frame.add(canvas);
@@ -146,7 +159,10 @@ public static void main(String[] args) {
 	}
 
 public void createSingleBubble() {
-	bubble.addParticle(0.5, 0.5, 1, 1);
+	double bubbleXLocation = (Math.random() * 0.2) + 0.6; 
+	double bubbleSize = (Math.random() * 20) + 20;
+	bubbleSystem.addParticle(bubbleXLocation, -0.6, bubbleSize, 0.7);
+	System.out.println("Particle created");
 }
 
 @Override
@@ -174,7 +190,7 @@ public void mousePressed(MouseEvent arg0) {
 }
 
 @Override
-public void mouseReleased(MouseEvent e) {
+public void mouseReleased(MouseEvent e){
 	float mouseX = e.getX();
 	float mouseY = e.getY();
 	mouseY = windowHeight - mouseY;
@@ -185,14 +201,31 @@ public void mouseReleased(MouseEvent e) {
 	}
 	if(openglX >= -.98 && openglY <= 0.98 && openglX <= -0.7 && openglY >= 0.91) {
 		System.out.println("In bounds");
-		if(buttons.buttonOn == false) {
-			buttons.buttonOn = true;
-			System.out.println("Pump is on!");
-			createSingleBubble();
-	}
+		System.out.println("Pump is on!");
+			if(buttons.buttonOn == false) {
+				buttons.buttonOn = true;
+				TimerTask task = new TimerTask() {
+					@Override
+					public void run() {
+						while(buttons.buttonOn == true) {
+							try {
+								createSingleBubble();
+								break;
+							}
+							catch(Exception ex) {}
+						}	
+					}
+				};
+			Timer timer = new Timer();
+			timer.schedule(task,  1, 100);
+			
+		}
 	else if(buttons.buttonOn == true){
 		buttons.buttonOn = false;
 		System.out.println("Pump is off!");
+		System.out.println("Array size "+bubbleSystem.bubbles.size());
+		bubbleSystem.bubbles.clear();
+		System.out.println("Bubbles removed!");
 		}
 	}
 	else {
