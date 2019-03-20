@@ -49,7 +49,7 @@ public class Pump {
 	         double x = Math.cos(angle) / 10;
 	         double y = Math.sin(angle) / 14;
 	         gl.glVertex2d(x + .7,y - .55);
-	     }
+	    }
 	    gl.glEnd();
 	    
 	    gl.glBegin(GL2.GL_TRIANGLE_FAN);

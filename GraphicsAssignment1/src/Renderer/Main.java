@@ -23,6 +23,7 @@ public class Main implements GLEventListener, MouseListener{
 	private BubbleSystem bubble;
 	private int windowWidth = 650;
 	private int windowHeight = 600;
+	private double prevTick;
 	
 	@Override
 	public void display(GLAutoDrawable drawable) {
@@ -78,6 +79,13 @@ public class Main implements GLEventListener, MouseListener{
 		//adds a wave to the top of the water
 		wave.draw(gl);
 		
+		double tick = System.currentTimeMillis() / 1000.0;
+		double time = tick - prevTick;
+		if (prevTick > 0) {
+			bubble.animate(time);
+		}
+		prevTick = tick;
+		
 		bubble.draw(gl);
 	}
 	
@@ -88,14 +96,16 @@ public class Main implements GLEventListener, MouseListener{
 	
 	@Override
 	public void init(GLAutoDrawable drawable) {
+		GL2 gl = drawable.getGL().getGL2();
+		gl.setSwapInterval(1);
+		gl.glShadeModel(GL2.GL_SMOOTH);
 		pump = new Pump();
 		water = new Water();
 		buttons = new Buttons();
 		wave = new WaveAnimation();
 		bubble = new BubbleSystem();
-		GL2 gl = drawable.getGL().getGL2();
-		gl.setSwapInterval(1);
-		gl.glShadeModel(GL2.GL_SMOOTH);
+		prevTick = 0;
+		
 	}
 	
 	@Override
@@ -135,6 +145,10 @@ public static void main(String[] args) {
 	animator.start();
 	}
 
+public void createSingleBubble() {
+	bubble.addParticle(0.5, 0.5, 1, 1);
+}
+
 @Override
 public void mouseClicked(MouseEvent arg0) {
 	// TODO Auto-generated method stub
@@ -170,18 +184,19 @@ public void mouseReleased(MouseEvent e) {
 	System.out.println("Click "+openglX+" "+openglY);
 	}
 	if(openglX >= -.98 && openglY <= 0.98 && openglX <= -0.7 && openglY >= 0.91) {
-	System.out.println("In bounds");
-	if(buttons.buttonOn == false) {
-	buttons.buttonOn = true;
-	System.out.println("Pump is on!");
+		System.out.println("In bounds");
+		if(buttons.buttonOn == false) {
+			buttons.buttonOn = true;
+			System.out.println("Pump is on!");
+			createSingleBubble();
 	}
 	else if(buttons.buttonOn == true){
-	buttons.buttonOn = false;
-	System.out.println("Pump is off!");
-	}
+		buttons.buttonOn = false;
+		System.out.println("Pump is off!");
+		}
 	}
 	else {
-	System.out.println("Out of bounds");
+		System.out.println("Out of bounds");
 	}
 }
 

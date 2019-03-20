@@ -72,33 +72,3 @@ public class WaveAnimation {
 		gl.glDisable(GL2.GL_BLEND);
 	}
 }
-
-/*for(int i = 0; i <= 8; i++) {
-if(waveIncreasing == true) {
-	y1 += 0.00005;
-	if(y1 >= 0.9) {
-		waveIncreasing = false;
-	}
-}
-else if(waveIncreasing == false) {
-	y1 -= 0.00005;
-	if(y1 <= 0.7) {
-		waveIncreasing = true;
-	}
-}
-gl.glVertex2d(waveX[i], y1);
-
-if(waveIncreasing == true) {
-	y2 -= 0.00005;
-	if(y2 <= 0.7) {
-		waveIncreasing = false;
-	}
-}
-else if(waveIncreasing == false) {
-	y2 += 0.00005;
-	if(y2 >= 0.9) {
-		waveIncreasing = true;
-	}
-}
-gl.glVertex2d(waveX[i], y2);
-}*/

@@ -6,6 +6,9 @@ import com.jogamp.opengl.GL2;
 
 public class BubbleSystem {
 	
+	private double bubbleMovement = 0.6;
+	private boolean bubbleRising = true;
+	private double transparency = 0.5;
 	private ArrayList<Bubbles> bubble;
 	
 	public BubbleSystem() {
@@ -44,12 +47,24 @@ public class BubbleSystem {
 		for(Bubbles b : bubble) {
 			double f = b.age / b.ageMax;
 			for(int i = 0; i <= 100; i++){
-				gl.glColor4d(1, 1 - f, 1, 0.5 - f);
+				gl.glColor4d(1, 1 - f, 1, transparency - f);
 		        double angle = 2 * Math.PI * i / 50;
-		        double x = Math.cos(angle) / 10;
-		        double y = Math.sin(angle) / 14;
-		        gl.glVertex2d(x + .7,y - .75);
+		        double x = Math.cos(angle) / 20;
+		        double y = Math.sin(angle) / 20;
+		        gl.glVertex2d(x + .7, y - bubbleMovement);
+		        if(transparency == 0) {
+		        	bubble.remove(b);
+		        	System.out.println("bubble removed from transparency");
+		        }
 			}
+			if(bubbleRising == true) {
+				bubbleMovement -= 0.005;
+			}
+	        if (bubbleMovement >= 0.8) {
+	        	bubble.remove(b);
+	        	System.out.println("Bubble has been removed");
+	        }
+	       
 		}
 		gl.glEnd();
 		gl.glDisable(GL2.GL_BLEND);
