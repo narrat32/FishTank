@@ -8,9 +8,6 @@ public class Bubbles {
 	public double age;
 	public double ageMax;
 	
-	public Bubbles(double x, double y) {
-		this(x, y, x*3, y*3);
-	}
 	
 	public Bubbles(double bubbleXLocation, double y, double bubbleSize, double bubbleMovement) {
 		this.bubbleXLocation = bubbleXLocation;

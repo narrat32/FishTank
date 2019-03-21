@@ -122,8 +122,8 @@ public class Fish {
 		    gl.glVertex2d(0.1, finRaiseY2);
 		    gl.glEnd();
 	     
-	     //left eye
-	     gl.glBegin(GL2.GL_TRIANGLE_FAN);
+		    //left eye
+		    gl.glBegin(GL2.GL_TRIANGLE_FAN);
 			//gl.glEnable(GL2.GL_BLEND);
 			//gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 			gl.glColor3d(1, 0.5, 0);

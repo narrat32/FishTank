@@ -16,6 +16,7 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
+import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 public class Main implements GLEventListener, MouseListener{
@@ -26,6 +27,8 @@ public class Main implements GLEventListener, MouseListener{
 	private Pump pump;
 	private BubbleSystem bubbleSystem;
 	private FishHook hook;
+	private BloodSystem bloodSystem;
+	private Harpoon harpoon;
 	private int windowWidth = 650;
 	private int windowHeight = 600;
 	private double prevTick;
@@ -61,6 +64,8 @@ public class Main implements GLEventListener, MouseListener{
 		gl.glVertex2d(-1, -0.75);
 		gl.glEnd();
 		
+		//draws the harpoon
+		harpoon.draw(gl);
 		
 		//draws the fish
 		fish.draw(gl, hook);
@@ -68,13 +73,27 @@ public class Main implements GLEventListener, MouseListener{
 		//draws the hook
 		hook.draw(gl);
 		
-		//draws the overlaying water
-		water.draw(gl);
-		
-		
 		//draws the pump
 		pump.createList(gl);
 		gl.glCallList(pump.pumpIndex);
+		
+		double tick = System.currentTimeMillis() / 1000.0;
+		double time = tick - prevTick;
+		if (prevTick > 0) {
+			bubbleSystem.animate(time);
+			bloodSystem.animate(time);
+		}
+		prevTick = tick;
+		
+		//draws the bubbles
+		bubbleSystem.draw(gl);
+		
+		//draws blood
+		bloodSystem.draw(gl);
+		
+		
+		//draws the overlaying water
+		water.draw(gl);
 		
 		//adds a wave to the top of the water
 		wave.draw(gl);
@@ -95,14 +114,7 @@ public class Main implements GLEventListener, MouseListener{
 		
 		
 		
-		double tick = System.currentTimeMillis() / 1000.0;
-		double time = tick - prevTick;
-		if (prevTick > 0) {
-			bubbleSystem.animate(time);
-		}
-		prevTick = tick;
-		//draws the bubbles
-		bubbleSystem.draw(gl);
+	
 	}
 	
 	@Override
@@ -122,6 +134,8 @@ public class Main implements GLEventListener, MouseListener{
 		wave = new WaveAnimation();
 		hook = new FishHook();
 		bubbleSystem = new BubbleSystem();
+		bloodSystem = new BloodSystem();
+		harpoon = new Harpoon();
 		prevTick = 0;
 		
 	}
@@ -144,7 +158,7 @@ public static void main(String[] args) {
 	canvas.addMouseListener(background);
 	frame.add(canvas);
 	frame.setSize(650, 600);
-	final Animator animator = new Animator(canvas);
+	final FPSAnimator animator = new FPSAnimator(canvas, 60);
 	
 	frame.addWindowListener(new WindowAdapter() {
 		public void windowClosing(WindowEvent e) {
@@ -164,11 +178,18 @@ public static void main(String[] args) {
 	animator.start();
 	}
 
-public void createSingleBubble() {
+public void createBubbles() {
 	double bubbleXLocation = (Math.random() * 0.2) + 0.6; 
-	double bubbleSize = (Math.random() * 20) + 20;
-	bubbleSystem.addParticle(bubbleXLocation, -0.6, bubbleSize, 0.7);
+	double circleSize = (Math.random() * 20) + 20;
+	bubbleSystem.addParticle(bubbleXLocation, -0.6, circleSize, 0.7);
+
 	System.out.println("Particle created");
+}
+
+public void createBlood() {
+	double bloodXLocation = (Math.random() * 0); 
+	double circleSize = (Math.random() * 20) + 20;
+	bloodSystem.addParticle(bloodXLocation, 0, circleSize, 0.7);
 }
 
 @Override
@@ -205,6 +226,7 @@ public void mouseReleased(MouseEvent e){
 	if (e.getButton() == 1){
 	System.out.println("Click "+openglX+" "+openglY);
 	}
+	
 	if(openglX >= -.98 && openglY <= 0.98 && openglX <= -0.7 && openglY >= 0.91) {
 		System.out.println("In bounds");
 		System.out.println("Pump is on!");
@@ -216,7 +238,7 @@ public void mouseReleased(MouseEvent e){
 					public void run() {
 						while(buttons.buttonOneOn == true) {
 							try {
-								createSingleBubble();
+								createBubbles();
 								break;
 							}
 							catch(Exception ex) {}
@@ -227,30 +249,54 @@ public void mouseReleased(MouseEvent e){
 			timer.schedule(task,  1, 100);
 			bubbleSystem.bubbles.clear();
 			
-		}
-	else if(buttons.buttonOneOn == true){
-		buttons.buttonOneOn = false;
-		System.out.println("Pump is off!");
-		System.out.println("Array size "+bubbleSystem.bubbles.size());
-		bubbleSystem.bubbles.clear();
+			}
+		else if(buttons.buttonOneOn == true){
+			buttons.buttonOneOn = false;
+			System.out.println("Pump is off!");
+			System.out.println("Array size "+bubbleSystem.bubbles.size());
+			bubbleSystem.bubbles.clear();
 		
-		System.out.println("Bubbles removed!");
+			System.out.println("Bubbles removed!");
+			}
+		}
+		else if(openglX >= -.65 && openglY <= 0.98 && openglX <= -0.37 && openglY >= 0.91) {
+			if(buttons.buttonTwoOn == false) {
+				buttons.buttonTwoOn = true;
+				hook.hookRaised = true;
+			}
+			else if(buttons.buttonTwoOn == true) {
+				buttons.buttonTwoOn = false;
+				hook.hookRaised = false;
+			}
+		}
+	
+		else if(openglX >= -1 && openglY <= 0.01 && openglX <= -0.5 && openglY >= -0.01) {
+			harpoon.isClicked = true;
+			if(harpoon.pierceX2 <= 0) {
+				System.out.println(+harpoon.handleX1+" "+harpoon.handleX2);
+				TimerTask task = new TimerTask() {
+					@Override
+					public void run() {
+						while(harpoon.pierceX2 >= 0) {
+							try {
+								createBlood();
+								break;
+							}
+							catch(Exception ex) {}
+						}	
+					}
+				};
+			Timer timer = new Timer();
+			timer.schedule(task,  1, 100);
+			}
+			else if(openglX >= -1 && openglY <= 0.01 && openglX <= -0.5 && openglY >= -0.01) {
+				System.out.println("This is hit");
+				harpoon.isClicked = false;
+			}
+		}
+		else {
+			System.out.println("Out of bounds");
 		}
 	}
-	else if(openglX >= -.65 && openglY <= 0.98 && openglX <= -0.37 && openglY >= 0.91) {
-		if(buttons.buttonTwoOn == false) {
-			buttons.buttonTwoOn = true;
-			hook.yValue = -0.04;
-			hook.hookRaised = true;
-		}
-		else if(buttons.buttonTwoOn == true) {
-			buttons.buttonTwoOn = false;
-			hook.hookRaised = false;
-		}
-	}
-	else {
-		System.out.println("Out of bounds");
-	}
-}
 
 }
