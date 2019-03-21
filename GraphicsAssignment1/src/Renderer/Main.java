@@ -25,6 +25,7 @@ public class Main implements GLEventListener, MouseListener{
 	private WaveAnimation wave;
 	private Pump pump;
 	private BubbleSystem bubbleSystem;
+	private FishHook hook;
 	private int windowWidth = 650;
 	private int windowHeight = 600;
 	private double prevTick;
@@ -36,16 +37,6 @@ public class Main implements GLEventListener, MouseListener{
 		GLUT glut = new GLUT();
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
-		
-		//creates a blank bar for buttons
-		gl.glBegin(GL2.GL_POLYGON);
-		gl.glColor3d(0.66, 0.66, 0.64);
-		gl.glVertex2d(-1,1);
-		gl.glVertex2d(1, 1);
-		gl.glVertex2d(1, 0.9);
-		gl.glVertex2d(-1, 0.9);
-		gl.glEnd();
-		
 		
 		//creates a blue background
 		gl.glBegin(GL2.GL_POLYGON);
@@ -72,21 +63,35 @@ public class Main implements GLEventListener, MouseListener{
 		
 		
 		//draws the fish
-		fish.createList(gl);
-		gl.glCallList(fish.fishIndex);
+		fish.draw(gl, hook);
+		
+		//draws the hook
+		hook.draw(gl);
 		
 		//draws the overlaying water
 		water.draw(gl);
+		
 		
 		//draws the pump
 		pump.createList(gl);
 		gl.glCallList(pump.pumpIndex);
 		
-		//draws the button and adds functionality
-		buttons.draw(gl, glut);
-		
 		//adds a wave to the top of the water
 		wave.draw(gl);
+		
+		//creates a blank bar for buttons
+		gl.glBegin(GL2.GL_POLYGON);
+		gl.glColor3d(0.66, 0.66, 0.64);
+		gl.glVertex2d(-1,1);
+		gl.glVertex2d(1, 1);
+		gl.glVertex2d(1, 0.9);
+		gl.glVertex2d(-1, 0.9);
+		gl.glEnd();
+				
+		
+		//draws the button and adds functionality
+		buttons.drawButtonOne(gl, glut);
+		buttons.drawButtonTwo(gl, glut);
 		
 		
 		
@@ -115,6 +120,7 @@ public class Main implements GLEventListener, MouseListener{
 		water = new Water();
 		buttons = new Buttons();
 		wave = new WaveAnimation();
+		hook = new FishHook();
 		bubbleSystem = new BubbleSystem();
 		prevTick = 0;
 		
@@ -200,15 +206,15 @@ public void mouseReleased(MouseEvent e){
 	System.out.println("Click "+openglX+" "+openglY);
 	}
 	if(openglX >= -.98 && openglY <= 0.98 && openglX <= -0.7 && openglY >= 0.91) {
-		bubbleSystem.bubbles.clear();
 		System.out.println("In bounds");
 		System.out.println("Pump is on!");
-			if(buttons.buttonOn == false) {
-				buttons.buttonOn = true;
+			if(buttons.buttonOneOn == false) {
+				buttons.buttonOneOn = true;
+				bubbleSystem.bubbles.clear();
 				TimerTask task = new TimerTask() {
 					@Override
 					public void run() {
-						while(buttons.buttonOn == true) {
+						while(buttons.buttonOneOn == true) {
 							try {
 								createSingleBubble();
 								break;
@@ -219,15 +225,27 @@ public void mouseReleased(MouseEvent e){
 				};
 			Timer timer = new Timer();
 			timer.schedule(task,  1, 100);
+			bubbleSystem.bubbles.clear();
 			
 		}
-	else if(buttons.buttonOn == true){
-		buttons.buttonOn = false;
+	else if(buttons.buttonOneOn == true){
+		buttons.buttonOneOn = false;
 		System.out.println("Pump is off!");
 		System.out.println("Array size "+bubbleSystem.bubbles.size());
 		bubbleSystem.bubbles.clear();
 		
 		System.out.println("Bubbles removed!");
+		}
+	}
+	else if(openglX >= -.65 && openglY <= 0.98 && openglX <= -0.37 && openglY >= 0.91) {
+		if(buttons.buttonTwoOn == false) {
+			buttons.buttonTwoOn = true;
+			hook.yValue = -0.04;
+			hook.hookRaised = true;
+		}
+		else if(buttons.buttonTwoOn == true) {
+			buttons.buttonTwoOn = false;
+			hook.hookRaised = false;
 		}
 	}
 	else {

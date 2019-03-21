@@ -5,22 +5,18 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.jogamp.opengl.GL2;
 
 public class BubbleSystem {
 	
 	private double transparency = 0.5;
-	//public ArrayList<Bubbles> bubbles;
-	public List<Bubbles> bubbles = Collections.synchronizedList(new ArrayList<Bubbles>());
+	public CopyOnWriteArrayList<Bubbles> bubbles;
 	
 	public BubbleSystem() {
-		bubbles = new ArrayList<Bubbles>();
+		bubbles = new CopyOnWriteArrayList<Bubbles>();
 		
-	}
-	
-	public void addParticle(double x, double y) {
-		bubbles.add(new Bubbles(x, y));
 	}
 	
 	public void addParticle(double x, double y, double dx, double dy) {
@@ -28,6 +24,7 @@ public class BubbleSystem {
 	}
 	
 	public void animate(double time) {
+		
 		for(Bubbles b: bubbles) {
 			b.age += time;
 			
@@ -44,11 +41,12 @@ public class BubbleSystem {
 				System.out.println("bubble removed");
 			}
 			//remove bubble if water level is reached
-			if(bubbles.size() > 25) {
-				bubbles.remove(b);
-				System.out.println("Array is too large!");
-			}
 			if(b.y > 0.8) {
+				bubbles.remove(b);
+				System.out.println("Bubble Removed");
+			}
+			//removes bubble if it gets too small{
+			if(b.bubbleSize > 50) {
 				bubbles.remove(b);
 				System.out.println("Bubble Removed");
 			}
@@ -58,7 +56,8 @@ public class BubbleSystem {
 	public void draw(GL2 gl) {
 		gl.glEnable(GL2.GL_BLEND);
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-				
+		
+		
 		for(Bubbles b : bubbles) {
 			double f = b.age / b.ageMax;
 			gl.glBegin(GL2.GL_TRIANGLE_FAN);

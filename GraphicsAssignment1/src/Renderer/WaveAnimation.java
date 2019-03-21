@@ -17,7 +17,6 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class WaveAnimation {
 	private double waveX[] = {-1, -0.75, -0.5, -0.25, -0, 0.25, 0.5, 0.75, 1};
-	private double y1 = 0.8;
 	private double yLeftIncrease = 0.81;
 	private double yRightIncrease = 0.81;
 	private boolean waveIncreasing = true;

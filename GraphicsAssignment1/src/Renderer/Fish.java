@@ -15,36 +15,72 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 
 public class Fish {
+	private boolean finRaised = true;
 	
-	public int fishIndex;
+	//fin Y values
+	private double finRaiseY1 = 0.05;
+	private double finRaiseY2 = -0.05;
+	private double finRaiseY3 = 0;
+	private double finRaiseY4 = 0;
+	
+	//eye y value
+	private double eyeY = 0.05;
+	
+	//mouth y value
+	private double mouthY = 0.04;
+	
+	//top fin y values
+	private double topFinY1 = 0.125;
+	private double topFinY2 = 0.15;
+	
+	//body y value
+	private double bodyY = 0;
 	
 	public Fish() {
 		
 	}
 	
-	public void createList(GL2 gl) {
-		this.fishIndex = gl.glGenLists(9);
-		
-		boolean finRaised = true;
-		double raiseY1 = 0.05;
-		double raiseY2 = -0.05;
-		
+	public void draw(GL2 gl, FishHook hook) {
 		if(finRaised == true) {
-			raiseY1 -= 0.005;
-			raiseY2 += 0.005;
-			if(raiseY1 >= 0.07) {
+			finRaiseY1 += 0.0005;
+			finRaiseY2 += 0.0005;
+			finRaiseY3 += 0.0005;
+			if(finRaiseY1 >= bodyY + 0.09) {
 				finRaised = false;
 			}
-			
 		}
-		
-		else if(finRaised == false) {
-			raiseY1 += 0.005;
-			raiseY2 -= 0.005;
-			if(raiseY1 <= 0.3)
+		if(finRaised == false) {
+			finRaiseY1 -= 0.0005;
+			finRaiseY2 -= 0.0005;
+			finRaiseY3 -= 0.0005;
+			if(finRaiseY1 <= bodyY - 0.01)
 			{
 				finRaised = true;
 			}
+		}
+		
+		if(hook.hookRaised == true && bodyY <= 1.1) {
+			finRaiseY1 += 0.005;
+			finRaiseY2 += 0.005;
+			finRaiseY3 += 0.005;
+			finRaiseY4 += 0.005;
+			eyeY += 0.005;
+			mouthY -= 0.005;
+			topFinY1 += 0.005;
+			topFinY2 += 0.005;
+			bodyY += 0.005;
+		}
+		
+		if(hook.hookRaised == false && bodyY >= 0) {
+			finRaiseY1 -= 0.005;
+			finRaiseY2 -= 0.005;
+			finRaiseY3 -= 0.005;
+			finRaiseY4 -= 0.005;
+			eyeY -= 0.005;
+			mouthY += 0.005;
+			topFinY1 -= 0.005;
+			topFinY2 -= 0.005;
+			bodyY -= 0.005;
 		}
 		
 		//body
@@ -56,7 +92,7 @@ public class Fish {
 	         double x = Math.cos(angle) / 22.5;
 	         double y = Math.sin(angle) / 7.5;
 	         gl.glColor3d(1, 0.5, 0);
-	         gl.glVertex2d( x, y);
+	         gl.glVertex2d( x, y + bodyY);
 	         //gl.glColor3d(1, 0.76, .52);
 	         //gl.glVertex2d( x, y);
 	         
@@ -69,10 +105,10 @@ public class Fish {
 		    gl.glEnable(GL2.GL_BLEND);
 		    gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		    gl.glColor3d(1, 1, 1);
-		    gl.glVertex2d(-0.03, 0);
-		    gl.glVertex2d(-0.1, raiseY1);
-		    gl.glVertex2d(-0.07, 0);
-		    gl.glVertex2d(-0.1, raiseY2);
+		    gl.glVertex2d(-0.03, finRaiseY4);
+		    gl.glVertex2d(-0.1, finRaiseY1);
+		    gl.glVertex2d(-0.07, finRaiseY3);
+		    gl.glVertex2d(-0.1, finRaiseY2);
 		    gl.glEnd();
 		    
 		    //right fin
@@ -80,10 +116,10 @@ public class Fish {
 		    gl.glEnable(GL2.GL_BLEND);
 		    gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		    gl.glColor3d(1, 1, 1);
-		    gl.glVertex2d(0.03, 0);
-		    gl.glVertex2d(0.1, -0.05);
-		    gl.glVertex2d(0.07, 0);
-		    gl.glVertex2d(0.1, 0.05);
+		    gl.glVertex2d(0.03, finRaiseY4);
+		    gl.glVertex2d(0.1, finRaiseY1);
+		    gl.glVertex2d(0.07, finRaiseY3);
+		    gl.glVertex2d(0.1, finRaiseY2);
 		    gl.glEnd();
 	     
 	     //left eye
@@ -95,7 +131,7 @@ public class Fish {
 		         double angle = 2 * Math.PI * i / 300;
 		         double x = Math.cos(angle) / 40;
 		         double y = Math.sin(angle) / 15;
-		         gl.glVertex2d( x - 0.04, y + 0.05);
+		         gl.glVertex2d( x - 0.04, y + eyeY);
 		         gl.glColor3d(1, 1, 1);
 		         
 		    }
@@ -110,7 +146,7 @@ public class Fish {
 		         double angle = 2 * Math.PI * i / 300;
 		         double x = Math.cos(angle) / 40;
 		         double y = Math.sin(angle) / 15;
-		         gl.glVertex2d( x + 0.04, y + 0.05);
+		         gl.glVertex2d( x + 0.04, y + eyeY);
 		         gl.glColor3d(1, 1, 1);
 		         
 		    }
@@ -125,7 +161,7 @@ public class Fish {
 		         double angle = 2 * Math.PI * i / 300;
 		         double x = Math.cos(angle) / 50;
 		         double y = Math.sin(angle) / 25;
-		         gl.glVertex2d( x + 0.04, y + 0.05);
+		         gl.glVertex2d( x + 0.04, y + eyeY);
 		         gl.glColor3d(0, 0, 0);
 		         
 		    }
@@ -140,7 +176,7 @@ public class Fish {
 		         double angle = 2 * Math.PI * i / 300;
 		         double x = Math.cos(angle) / 50;
 		         double y = Math.sin(angle) / 25;
-		         gl.glVertex2d( x - 0.04, y + 0.05);
+		         gl.glVertex2d( x - 0.04, y + eyeY);
 		         gl.glColor3d(0, 0, 0);
 		         
 		    }
@@ -155,7 +191,7 @@ public class Fish {
 		         double angle = 2 * Math.PI * i / 300;
 		         double x = Math.cos(angle) / 40;
 		         double y = Math.sin(angle) / 70;
-		         gl.glVertex2d( x, y - 0.04);
+		         gl.glVertex2d( x, y - mouthY);
 		         gl.glColor3d(1, 1, 1);
 		         
 		    }
@@ -166,13 +202,9 @@ public class Fish {
 		    gl.glEnable(GL2.GL_BLEND);
 		    gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		    gl.glColor3d(1, 1, 1);
-		    gl.glVertex2d(0, 0.125);
-		    gl.glVertex2d(0.025,  0.15);
-		    gl.glVertex2d(-0.025,  0.15);
+		    gl.glVertex2d(0, topFinY1);
+		    gl.glVertex2d(0.025,  topFinY2);
+		    gl.glVertex2d(-0.025,  topFinY2);
 		    gl.glEnd();
-		    
-		    
-		    
-	    gl.glEndList();
 	}
 }
